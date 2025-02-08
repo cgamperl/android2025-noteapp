@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Toolbar aktivieren
+        setSupportActionBar(binding.toolbar);
+
         binding.floatingActionButton.setOnClickListener(view -> {
             // BottomSheet anzeigen
             BottomSheet bottomSheet = new BottomSheet();
