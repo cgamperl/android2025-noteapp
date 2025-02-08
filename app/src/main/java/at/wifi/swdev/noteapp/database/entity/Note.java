@@ -1,5 +1,6 @@
 package at.wifi.swdev.noteapp.database.entity;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -27,7 +28,9 @@ public class Note {
     public String title;
     public String content;
     public int priority;
+    @ColumnInfo(name = "created_at")
     public LocalDateTime createdAt;
+    @ColumnInfo(name = "updated_at")
     public LocalDateTime updatedAt;
     public boolean done;
 }
