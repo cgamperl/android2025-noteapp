@@ -1,6 +1,7 @@
 package at.wifi.swdev.noteapp.database.entity;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class Note {
     public Note() {
     }
 
+    @Ignore
     public Note(String title, String content) {
         this.title = title;
         this.content = content;
