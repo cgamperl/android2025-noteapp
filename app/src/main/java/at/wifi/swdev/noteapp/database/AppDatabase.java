@@ -5,14 +5,17 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import at.wifi.swdev.noteapp.database.converters.LocalDateTimeConverter;
 import at.wifi.swdev.noteapp.database.dao.NoteDao;
 import at.wifi.swdev.noteapp.database.entity.Note;
 
 @Database(version = 1, entities = {Note.class}, exportSchema = false)
+@TypeConverters({LocalDateTimeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     // Es soll nicht möglich sein, mehr als eine Instanz der Datenbank zu erstellen (=SINGLETON)
