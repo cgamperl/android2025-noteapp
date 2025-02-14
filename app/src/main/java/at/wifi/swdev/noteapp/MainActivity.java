@@ -8,11 +8,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import at.wifi.swdev.noteapp.databinding.ActivityMainBinding;
 import at.wifi.swdev.noteapp.view.BottomSheet;
 import at.wifi.swdev.noteapp.view.NoteListAdapter;
+import at.wifi.swdev.noteapp.view.SwipeCallback;
 import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         // Dem RecyclerView den Adapter zuweisen
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Swiping für RecyclerView aktivieren
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback());
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView);
 
         binding.floatingActionButton.setOnClickListener(view -> {
             // BottomSheet anzeigen
