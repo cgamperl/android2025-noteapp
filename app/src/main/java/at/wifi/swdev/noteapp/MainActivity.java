@@ -7,9 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import at.wifi.swdev.noteapp.databinding.ActivityMainBinding;
 import at.wifi.swdev.noteapp.view.BottomSheet;
+import at.wifi.swdev.noteapp.view.NoteListAdapter;
+import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +35,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Toolbar aktivieren
         setSupportActionBar(binding.toolbar);
+
+        // Ans ViewModel "andocken"
+        NoteViewModel viewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+
+        // Adapter für den RecyclerView erstellen
+        NoteListAdapter adapter = new NoteListAdapter();
+
+        // Daten aus dem ViewModel laden und in der Liste anzeigen
+        // (-> dem Adapter die Liste von Notizen übergeben)
+        viewModel.getAllNotes().observe(this, notes -> adapter.setAllNotes(notes));
+
+        // Dem RecyclerView den Adapter zuweisen
+        binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         binding.floatingActionButton.setOnClickListener(view -> {
             // BottomSheet anzeigen
