@@ -41,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Adapter für den RecyclerView erstellen
         NoteListAdapter adapter = new NoteListAdapter();
+        adapter.setOnListItemClickListener((note, position) -> {
+            // Bottomsheet anzeigen mit ausgewählter Notiz
+            BottomSheet bottomSheet = new BottomSheet();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(BottomSheet.NOTE_KEY, note);
+
+            // Wie bekomme ich ein Bundle in mein BottomSheet hinein?
+            bottomSheet.setArguments(bundle);
+
+            bottomSheet.show(getSupportFragmentManager(), "EditBottomSheet");
+        });
 
         // Daten aus dem ViewModel laden und in der Liste anzeigen
         // (-> dem Adapter die Liste von Notizen übergeben)
@@ -53,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         binding.floatingActionButton.setOnClickListener(view -> {
             // BottomSheet anzeigen
             BottomSheet bottomSheet = new BottomSheet();
-            bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
+            bottomSheet.show(getSupportFragmentManager(), "CreateBottomSheet");
         });
     }
 }

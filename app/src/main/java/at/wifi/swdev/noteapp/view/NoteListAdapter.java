@@ -12,10 +12,12 @@ import java.util.List;
 
 import at.wifi.swdev.noteapp.R;
 import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.listener.OnListItemClickListener;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteViewHolder> {
 
     private List<Note> allNotes;
+    private OnListItemClickListener itemClickListener;
 
     /**
      * Setter, damit dem Adapter eine Liste der anzuzeigenden Notes übergeben werden kann.
@@ -25,6 +27,10 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
     public void setAllNotes(List<Note> allNotes) {
         this.allNotes = allNotes;
         notifyDataSetChanged(); // Sagt dem Adapter, dass sich seine Daten geändert haben
+    }
+
+    public void setOnListItemClickListener(OnListItemClickListener listener) {
+        this.itemClickListener = listener;
     }
 
     @NonNull
@@ -50,6 +56,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         // Felder dem Layout zuordnen
         holder.titleTV.setText(note.title);
         holder.contentTV.setText(note.content);
+
+        // Wenn auf den Holder geklickt wird...
+        holder.itemView.setOnClickListener(view -> {
+            if (itemClickListener != null) {
+                // Wenn wir onListItemClick ausführen, wird der Code, den die MainActivity übergeben hat, ausgeführt
+                itemClickListener.onListItemClick(note, position);
+            }
+        });
     }
 
     @Override

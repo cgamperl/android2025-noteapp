@@ -17,13 +17,24 @@ import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class BottomSheet extends BottomSheetDialogFragment {
 
+    public static final String NOTE_KEY = "note_key";
     private BottomsheetBinding binding;
     private NoteViewModel viewModel;
+    private Note noteToEdit;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
+
+        // Mögliche Notiz "auspacken"
+        // Gibt es ein Bundle?
+        if (getArguments() != null) {
+            // Ja, gibt es!
+            // Hat das Bundle eine Notiz?
+            Bundle bundle = getArguments();
+            noteToEdit = (Note) bundle.getSerializable(NOTE_KEY);
+        }
     }
 
     @Nullable
@@ -40,6 +51,14 @@ public class BottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Wollen wir eine Notiz erstellen oder bearbeiten?
+        // -> Wenn noteToEdit nicht null ist, bearbeiten wir eine bestehende Notiz
+        if (noteToEdit != null) {
+            // Bearbeiten -> Formular vorausfüllen
+            binding.titleET.setText(noteToEdit.title);
+            binding.contentET.setText(noteToEdit.content);
+        }
+
         binding.saveBtn.setOnClickListener(v -> {
 
             // Schritt 1: Inhalt der Eingabefelder auslesen
@@ -48,11 +67,21 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
             // TODO: Schritt 2: Validierung
 
-            // Schritt 3: Erstellen der Notiz
-            Note note = new Note(title, content);
+            if (noteToEdit != null) {
+                // wir aktualisieren die bestehende Notiz mit den aktuellen Werten aus dem Formular
+                noteToEdit.title = title;
+                noteToEdit.content = content;
+                // und schreiben diese zurück in die Datenbank
+                viewModel.update(noteToEdit);
+            } else {
+                // Wir erstellen eine neue Notiz
 
-            // Schritt 4: Notiz in Datenbank speichern
-            viewModel.insert(note);
+                // Schritt 3: Erstellen der Notiz
+                Note note = new Note(title, content);
+
+                // Schritt 4: Notiz in Datenbank speichern
+                viewModel.insert(note);
+            }
 
             // Schritt 5: Bottomsheet schließen
             dismiss();
