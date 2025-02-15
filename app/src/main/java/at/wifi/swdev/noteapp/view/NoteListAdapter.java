@@ -1,5 +1,6 @@
 package at.wifi.swdev.noteapp.view;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,12 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         // Felder dem Layout zuordnen
         holder.titleTV.setText(note.title);
         holder.contentTV.setText(note.content);
+
+        // Text durchstreichen, wenn Notiz schon erledigt
+        if (note.done) {
+            holder.titleTV.setPaintFlags(holder.titleTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.contentTV.setPaintFlags(holder.contentTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
 
         // Wenn auf den Holder geklickt wird...
         holder.itemView.setOnClickListener(view -> {
