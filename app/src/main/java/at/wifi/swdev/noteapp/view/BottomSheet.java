@@ -29,10 +29,11 @@ public class BottomSheet extends BottomSheetDialogFragment {
 
         // Mögliche Notiz "auspacken"
         // Gibt es ein Bundle?
-        if (getArguments() != null) {
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
             // Ja, gibt es!
             // Hat das Bundle eine Notiz?
-            Bundle bundle = getArguments();
             noteToEdit = (Note) bundle.getSerializable(NOTE_KEY);
         }
     }
