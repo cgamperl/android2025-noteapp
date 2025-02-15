@@ -33,6 +33,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         this.itemClickListener = listener;
     }
 
+    public Note getNoteAtPosition(int position) {
+        if (this.allNotes != null) { // Noch besser: Prüfen, ob position auch gültig
+            return this.allNotes.get(position);
+        }
+
+        return null;
+    }
+
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
