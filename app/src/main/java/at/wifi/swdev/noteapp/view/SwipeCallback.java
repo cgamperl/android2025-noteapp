@@ -41,21 +41,34 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        // Hier passiert das löschen
 
-        // Das ist die Position der Notiz die gelöscht werden soll in der Adapter-Liste
+        // Das ist die Position der Notiz die geswiped wurde in der Adapter-Liste
         int position = viewHolder.getAdapterPosition();
+        // Wie bekommen wir die Notiz selbst?
+        Note selectedNote = adapter.getNoteAtPosition(position);
 
-        // Wie bekommen wir die Liste der Notizen?
-        Note noteToDelete = adapter.getNoteAtPosition(position);
+        if (direction == ItemTouchHelper.RIGHT) {
+            // Hier passiert das löschen
+            deleteNote(selectedNote, viewHolder.itemView);
+        } else if (direction == ItemTouchHelper.LEFT) {
+            // Notiz als erledigt markieren
+            markNoteAsDone(selectedNote);
+        }
+    }
 
+    private void markNoteAsDone(Note selectedNote) {
+        selectedNote.done = true;
+        viewModel.update(selectedNote);
+    }
+
+    private void deleteNote(Note selectedNote, View view) {
         // Notiz löschen
-        viewModel.delete(noteToDelete);
+        viewModel.delete(selectedNote);
 
         // Rückgängig machen anzeigen
-        Snackbar.make(viewHolder.itemView, "Notiz wurde gelöscht", Snackbar.LENGTH_LONG).setAction("Undo", view -> {
+        Snackbar.make(view, "Notiz wurde gelöscht", Snackbar.LENGTH_LONG).setAction("Undo", v -> {
             // Wie mache ich das Löschen rückgängig?
-            viewModel.insert(noteToDelete);
+            viewModel.insert(selectedNote);
         }).show();
     }
 
