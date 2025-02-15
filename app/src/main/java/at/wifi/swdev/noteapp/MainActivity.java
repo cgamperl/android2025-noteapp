@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Swiping für RecyclerView aktivieren
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback(viewModel, adapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback(this, viewModel, adapter));
         itemTouchHelper.attachToRecyclerView(binding.recyclerView);
 
         binding.floatingActionButton.setOnClickListener(view -> {
