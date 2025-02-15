@@ -23,6 +23,8 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
     private final NoteListAdapter adapter;
     private Drawable deleteIcon;
     private ColorDrawable deleteBackground;
+    private Drawable doneIcon;
+    private ColorDrawable doneBackground;
 
     public SwipeCallback(Context context, NoteViewModel viewModel, NoteListAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
@@ -31,6 +33,9 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
 
         deleteIcon = ContextCompat.getDrawable(context, R.drawable.baseline_delete_outline_24);
         deleteBackground = new ColorDrawable(context.getColor(R.color.red));
+
+        doneIcon = ContextCompat.getDrawable(context, R.drawable.baseline_check_24);
+        doneBackground = new ColorDrawable(context.getColor(R.color.green));
     }
 
     @Override
@@ -74,10 +79,9 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onChildDraw(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
         View itemView = viewHolder.itemView;
-        int iconMargin = (itemView.getHeight() - deleteIcon.getIntrinsicHeight()) / 2;
+        int iconMargin = (itemView.getHeight() - doneIcon.getIntrinsicHeight()) / 2;
         int iconTop = itemView.getTop() + iconMargin;
         int iconBottom = itemView.getBottom() - iconMargin;
 
@@ -106,39 +110,55 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
                     iconBottom
             );
 
+            deleteBackground.draw(canvas);
+            deleteIcon.draw(canvas);
+
+            super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         } else if (dX < 0) {
-            // Wir swipen von rechts nach links
+            // Wir swipen von rechts nach links - MARK AS DONE
 
             // Wir lassen das Icon von rechts "reinfahren"
             int slideIn = 0;
-            int slideWidth = iconMargin + deleteIcon.getIntrinsicWidth() + iconMargin;
+            int slideWidth = iconMargin + doneIcon.getIntrinsicWidth() + iconMargin;
+
+            // Maximale Swipedistanz
+            double maxDx = -slideWidth;
+            double clampedDx = Math.max(dX, maxDx);
 
             if (-dX < slideWidth) {
                 slideIn = (int) dX + slideWidth;
             }
 
-            deleteBackground.setBounds(
-                    itemView.getRight() + (int) dX, // Plus, weil dX schon negativ ist
+            doneBackground.setBounds(
+                    itemView.getRight() + (int) clampedDx, // Plus, weil dX schon negativ ist
                     itemView.getTop(),
                     itemView.getRight(),
                     itemView.getBottom()
             );
 
-            deleteIcon.setBounds(
-                    itemView.getRight() - iconMargin - deleteIcon.getIntrinsicWidth() + slideIn,
+            doneIcon.setBounds(
+                    itemView.getRight() - iconMargin - doneIcon.getIntrinsicWidth() + slideIn,
                     iconTop,
                     itemView.getRight() - iconMargin + slideIn,
                     iconBottom
             );
 
+            doneBackground.draw(canvas);
+            doneIcon.draw(canvas);
 
+            super.onChildDraw(canvas, recyclerView, viewHolder, (int) clampedDx, dY, actionState, isCurrentlyActive);
         } else {
             // Hintergrund löschen
             deleteBackground.setBounds(0, 0, 0, 0);
             deleteIcon.setBounds(0, 0, 0, 0);
-        }
 
-        deleteBackground.draw(canvas);
-        deleteIcon.draw(canvas);
+            doneIcon.setBounds(0, 0, 0, 0);
+            doneBackground.setBounds(0, 0, 0, 0);
+
+            deleteBackground.draw(canvas);
+            deleteIcon.draw(canvas);
+            doneBackground.draw(canvas);
+            doneIcon.draw(canvas);
+        }
     }
 }
