@@ -1,9 +1,12 @@
 package at.wifi.swdev.noteapp;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -73,5 +76,38 @@ public class MainActivity extends AppCompatActivity {
             BottomSheet bottomSheet = new BottomSheet();
             bottomSheet.show(getSupportFragmentManager(), "CreateBottomSheet");
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Menü "einklinken"
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
+        // Wir implementieren die Suche
+        // Schritt 1: Wir brauchen das Menu-Item
+        MenuItem menuItem = menu.findItem(R.id.search);
+        // Schritt 2: Wir packen aus dem MenuItem den ActionView (Suchansicht) aus
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setQueryHint("Notizen durchsuchen");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Egal für uns... (Sucht erst, wenn der Benutzer 'Enter' drückt)
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Sucht, sobald sich der Suchbegriff geändert hat
+                // Wir übergeben dem Filter des Adapters den Suchbegriff
+                NoteListAdapter adapter = (NoteListAdapter) binding.recyclerView.getAdapter();
+                adapter.getFilter().filter(newText);
+
+                return true;
+            }
+        });
+
+        return true;
     }
 }

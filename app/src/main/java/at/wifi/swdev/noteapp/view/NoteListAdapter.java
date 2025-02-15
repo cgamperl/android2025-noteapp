@@ -3,20 +3,25 @@ package at.wifi.swdev.noteapp.view;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import at.wifi.swdev.noteapp.R;
 import at.wifi.swdev.noteapp.database.entity.Note;
 import at.wifi.swdev.noteapp.listener.OnListItemClickListener;
 
-public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteViewHolder> {
+public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteViewHolder> implements Filterable {
 
     private List<Note> allNotes;
+    private List<Note> filteredNotes;
     private OnListItemClickListener itemClickListener;
 
     /**
@@ -26,6 +31,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
      */
     public void setAllNotes(List<Note> allNotes) {
         this.allNotes = allNotes;
+        this.filteredNotes = new ArrayList<>(allNotes);  // TODO: Bug, wenn Notizen gelöscht oder hinzugefügt werden
         notifyDataSetChanged(); // Sagt dem Adapter, dass sich seine Daten geändert haben
     }
 
@@ -34,8 +40,8 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
     }
 
     public Note getNoteAtPosition(int position) {
-        if (this.allNotes != null) { // Noch besser: Prüfen, ob position auch gültig
-            return this.allNotes.get(position);
+        if (this.filteredNotes != null) { // Noch besser: Prüfen, ob position auch gültig
+            return this.filteredNotes.get(position);
         }
 
         return null;
@@ -59,7 +65,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         // * Welches Element soll angezeigt werden? (-> position)
 
         // Notiz die anzeigt werden soll ermitteln
-        Note note = allNotes.get(position);
+        Note note = filteredNotes.get(position);
 
         // Felder dem Layout zuordnen
         holder.titleTV.setText(note.title);
@@ -77,11 +83,46 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
     @Override
     public int getItemCount() {
         // Hier geben wir einfach die Anzahl der anzuzeigenden Elemente aus
-        if (allNotes != null) {
-            return allNotes.size();
+        if (filteredNotes != null) {
+            return filteredNotes.size();
         }
 
         return 0;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                // Läuft in einem eigenen Thread (wir müssen dafür aber nichts extra machen)
+
+                List<Note> filteredResults;
+                String searchTerm = charSequence.toString().toLowerCase();
+
+                if (charSequence.length() == 0) {
+                    // Suchbegriff wurde gelöscht -> Wieder alles anzeigen
+                    filteredResults = new ArrayList<>(allNotes);
+                } else {
+                    filteredResults = allNotes.stream()
+                            .filter(note -> note.title.toLowerCase().contains(searchTerm) || note.content.toLowerCase().contains(searchTerm))
+                            .collect(Collectors.toList());
+                }
+
+                // Suchtreffer in FilterResults "einpacken"
+                FilterResults results = new FilterResults();
+                results.values = filteredResults;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredNotes.clear();
+                filteredNotes.addAll((List) filterResults.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 
     // ViewHolder ist eine "Anzeigefläche" (=Listen-Element)
