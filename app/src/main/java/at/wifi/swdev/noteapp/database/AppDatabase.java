@@ -11,10 +11,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import at.wifi.swdev.noteapp.database.converters.LocalDateTimeConverter;
+import at.wifi.swdev.noteapp.database.dao.CategoryDao;
 import at.wifi.swdev.noteapp.database.dao.NoteDao;
+import at.wifi.swdev.noteapp.database.entity.Category;
 import at.wifi.swdev.noteapp.database.entity.Note;
 
-@Database(version = 1, entities = {Note.class}, exportSchema = false)
+@Database(version = 1, entities = {Note.class, Category.class}, exportSchema = false)
 @TypeConverters({LocalDateTimeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -44,5 +46,6 @@ public abstract class AppDatabase extends RoomDatabase {
     // DAOs in der Datenbank registrieren
     public abstract NoteDao getNoteDao();
 
+    public abstract CategoryDao getCategoryDao();
 
 }

@@ -29,6 +29,8 @@ public class Note implements Serializable {
     public String title;
     public String content;
     public int priority;
+    @ColumnInfo(name = "category_id")
+    public int categoryId;
     @ColumnInfo(name = "created_at")
     public LocalDateTime createdAt;
     @ColumnInfo(name = "updated_at")
