@@ -76,6 +76,10 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         if (note.done) {
             holder.titleTV.setPaintFlags(holder.titleTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.contentTV.setPaintFlags(holder.contentTV.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            // Durchgestrichen zurücksetzen, wenn Notiz nicht erledigt ist
+            holder.titleTV.setPaintFlags(0);
+            holder.contentTV.setPaintFlags(0);
         }
 
         // Wenn auf den Holder geklickt wird...
