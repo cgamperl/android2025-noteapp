@@ -3,18 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/noteTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem/random" />
@@ -29,4 +28,21 @@
         app:layout_constraintStart_toStartOf="@+id/noteTitle"
         app:layout_constraintTop_toBottomOf="@+id/noteTitle"
         tools:text="@tools:sample/lorem/random" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="80dp" />
+
+    <View
+        android:id="@+id/category"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/circle_shape"
+        app:layout_constraintBottom_toBottomOf="@+id/noteContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/noteTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
