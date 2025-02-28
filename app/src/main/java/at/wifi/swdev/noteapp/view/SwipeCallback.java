@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 
 import at.wifi.swdev.noteapp.R;
-import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
@@ -50,7 +50,7 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
         // Das ist die Position der Notiz die geswiped wurde in der Adapter-Liste
         int position = viewHolder.getAdapterPosition();
         // Wie bekommen wir die Notiz selbst?
-        Note selectedNote = adapter.getNoteAtPosition(position);
+        NoteWithCategory selectedNote = adapter.getNoteAtPosition(position);
 
         if (direction == ItemTouchHelper.RIGHT) {
             // Hier passiert das löschen
@@ -61,19 +61,21 @@ public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
         }
     }
 
-    private void markNoteAsDone(Note selectedNote) {
+    private void markNoteAsDone(NoteWithCategory selectedNote) {
         selectedNote.done = true;
-        viewModel.update(selectedNote);
+        // Wie komme ich von NoteWithCategory zu einer "normalen" Note?
+        viewModel.update(selectedNote.toNote());
     }
 
-    private void deleteNote(Note selectedNote, View view) {
+    private void deleteNote(NoteWithCategory selectedNote, View view) {
         // Notiz löschen
-        viewModel.delete(selectedNote);
+        viewModel.delete(selectedNote.toNote());
+        // Wie komme ich von NoteWithCategory zu einer "normalen" Note?
 
         // Rückgängig machen anzeigen
         Snackbar.make(view, "Notiz wurde gelöscht", Snackbar.LENGTH_LONG).setAction("Undo", v -> {
             // Wie mache ich das Löschen rückgängig?
-            viewModel.insert(selectedNote);
+            viewModel.insert(selectedNote.toNote());
         }).show();
     }
 

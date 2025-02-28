@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.wifi.swdev.noteapp.R;
-import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 import at.wifi.swdev.noteapp.listener.OnListItemClickListener;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteViewHolder> implements Filterable {
 
-    private List<Note> allNotes;
-    private List<Note> filteredNotes;
+    private List<NoteWithCategory> allNotes;
+    private List<NoteWithCategory> filteredNotes;
     private OnListItemClickListener itemClickListener;
 
     /**
@@ -30,7 +30,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
      *
      * @param allNotes
      */
-    public void setAllNotes(List<Note> allNotes) {
+    public void setAllNotes(List<NoteWithCategory> allNotes) {
         this.allNotes = allNotes;
         this.filteredNotes = new ArrayList<>(allNotes);  // TODO: Bug, wenn Notizen gelöscht oder hinzugefügt werden
         notifyDataSetChanged(); // Sagt dem Adapter, dass sich seine Daten geändert haben
@@ -40,7 +40,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         this.itemClickListener = listener;
     }
 
-    public Note getNoteAtPosition(int position) {
+    public NoteWithCategory getNoteAtPosition(int position) {
         if (this.filteredNotes != null) { // Noch besser: Prüfen, ob position auch gültig
             return this.filteredNotes.get(position);
         }
@@ -66,7 +66,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         // * Welches Element soll angezeigt werden? (-> position)
 
         // Notiz die anzeigt werden soll ermitteln
-        Note note = filteredNotes.get(position);
+        NoteWithCategory note = filteredNotes.get(position);
 
         // Felder dem Layout zuordnen
         holder.titleTV.setText(note.title);
@@ -104,7 +104,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
             protected FilterResults performFiltering(CharSequence charSequence) {
                 // Läuft in einem eigenen Thread (wir müssen dafür aber nichts extra machen)
 
-                List<Note> filteredResults;
+                List<NoteWithCategory> filteredResults;
                 String searchTerm = charSequence.toString().toLowerCase();
 
                 if (charSequence.length() == 0) {

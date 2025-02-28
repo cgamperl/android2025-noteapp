@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 import at.wifi.swdev.noteapp.databinding.BottomsheetBinding;
 import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
@@ -20,7 +21,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
     public static final String NOTE_KEY = "note_key";
     private BottomsheetBinding binding;
     private NoteViewModel viewModel;
-    private Note noteToEdit;
+    private NoteWithCategory noteToEdit;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
         if (bundle != null) {
             // Ja, gibt es!
             // Hat das Bundle eine Notiz?
-            noteToEdit = (Note) bundle.getSerializable(NOTE_KEY);
+            noteToEdit = (NoteWithCategory) bundle.getSerializable(NOTE_KEY);
         }
     }
 
@@ -73,7 +74,7 @@ public class BottomSheet extends BottomSheetDialogFragment {
                 noteToEdit.title = title;
                 noteToEdit.content = content;
                 // und schreiben diese zurück in die Datenbank
-                viewModel.update(noteToEdit);
+                viewModel.update(noteToEdit.toNote());
             } else {
                 // Wir erstellen eine neue Notiz
 

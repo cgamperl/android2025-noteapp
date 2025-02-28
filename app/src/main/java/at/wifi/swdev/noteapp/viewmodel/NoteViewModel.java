@@ -11,24 +11,25 @@ import java.util.List;
 import at.wifi.swdev.noteapp.database.AppDatabase;
 import at.wifi.swdev.noteapp.database.dao.NoteDao;
 import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 
 public class NoteViewModel extends AndroidViewModel {
 
     private final NoteDao dao;
-    private LiveData<List<Note>> allNotes;
+    private LiveData<List<NoteWithCategory>> allNotes;
 
     public NoteViewModel(@NonNull Application application) {
         super(application);
         dao = AppDatabase.getInstance(application).getNoteDao();
     }
 
-    public LiveData<List<Note>> getAllNotes() {
+    public LiveData<List<NoteWithCategory>> getAllNotes() {
         // LiveData kümmert sich selbst darum, dass die Abfrage in einem eigenen Thread ausgeführt wird
 
         // Gibt es schon eine Verbindung?
         if (allNotes == null) {
             // Nein, wir stellen eine Verbindung her...
-            allNotes = dao.getAllNotes();
+            allNotes = dao.getAllNotesWithCategory();
         }
 
         return allNotes;
