@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import at.wifi.swdev.noteapp.database.entity.Category;
 import at.wifi.swdev.noteapp.databinding.ActivityMainBinding;
 import at.wifi.swdev.noteapp.view.BottomSheet;
 import at.wifi.swdev.noteapp.view.NoteListAdapter;
 import at.wifi.swdev.noteapp.view.SwipeCallback;
+import at.wifi.swdev.noteapp.viewmodel.CategoryViewModel;
 import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Toolbar aktivieren
         setSupportActionBar(binding.toolbar);
+
+        // Seed categories
+        seedCategories();
 
         // Ans ViewModel "andocken"
         NoteViewModel viewModel = new ViewModelProvider(this).get(NoteViewModel.class);
@@ -110,4 +115,24 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private void seedCategories() {
+        // Viewmodel
+        CategoryViewModel categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+
+        categoryViewModel.getAllCategories().observe(this, categories -> {
+            // Insert categories, if list is empty
+            if (categories.isEmpty()) {
+                Category categoryHome = new Category("Zuhause", "2B4570");
+                Category categoryWork = new Category("Arbeit", "E49273");
+                Category categoryHobby = new Category("Hobby", "4BA3C3");
+
+                // Insert
+                categoryViewModel.insert(categoryHome);
+                categoryViewModel.insert(categoryWork);
+                categoryViewModel.insert(categoryHobby);
+            }
+        });
+    }
+
 }

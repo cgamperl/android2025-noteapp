@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class CategoryViewModel extends AndroidViewModel {
         categoryDao = AppDatabase.getInstance(application).getCategoryDao();
     }
 
-    public List<Category> getAllCategories() {
+    public LiveData<List<Category>> getAllCategories() {
         return categoryDao.getAllCategories();
     }
 
