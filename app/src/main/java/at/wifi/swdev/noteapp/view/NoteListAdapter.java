@@ -1,6 +1,8 @@
 package at.wifi.swdev.noteapp.view;
 
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +84,17 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
             holder.contentTV.setPaintFlags(0);
         }
 
+        // Kategorie-Indikator "einfärben"
+        // -> Farbe von Background ändern
+
+        // - Referenz auf den Background holen
+        GradientDrawable background = (GradientDrawable) holder.categoryView.getBackground();
+        // - Aus dem Zahlencode der Kategorie eine Farbe erzeugen
+        int color = Color.parseColor("#" + note.categoryColor);
+        // Farbe für Hintergrund setzen
+        background.setColor(color);
+
+
         // Wenn auf den Holder geklickt wird...
         holder.itemView.setOnClickListener(view -> {
             if (itemClickListener != null) {
@@ -141,12 +154,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
 
         private final TextView titleTV;
         private final TextView contentTV;
+        private final View categoryView;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             // itemView ist das äußerste Element in note_list_item.xml (=ConstraintLayout)
             titleTV = itemView.findViewById(R.id.noteTitle);
             contentTV = itemView.findViewById(R.id.noteContent);
+            categoryView = itemView.findViewById(R.id.category);
         }
     }
 
