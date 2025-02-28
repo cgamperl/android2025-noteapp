@@ -29,7 +29,7 @@ public interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY done ASC")
     LiveData<List<Note>> getAllNotes();
 
-    @Query("SELECT n.*, c.name AS categoryName, c.color AS categoryColor FROM notes n JOIN categories c ON n.category_id = c.id ORDER BY n.done ASC")
+    @Query("SELECT n.*, c.name AS categoryName, c.color AS categoryColor, c.id AS categoryId FROM notes n JOIN categories c ON n.category_id = c.id ORDER BY n.done ASC")
     LiveData<List<NoteWithCategory>> getAllNotesWithCategory();
 
 }
