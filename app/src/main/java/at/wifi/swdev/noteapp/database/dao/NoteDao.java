@@ -10,6 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 
 @Dao
 public interface NoteDao {
@@ -27,4 +28,8 @@ public interface NoteDao {
 
     @Query("SELECT * FROM notes ORDER BY done ASC")
     LiveData<List<Note>> getAllNotes();
+
+    @Query("SELECT n.*, c.name AS categoryName, c.color AS categoryColor FROM notes n JOIN categories c ON n.category_id = c.id ORDER BY n.done ASC")
+    LiveData<List<NoteWithCategory>> getAllNotesWithCategory();
+
 }
