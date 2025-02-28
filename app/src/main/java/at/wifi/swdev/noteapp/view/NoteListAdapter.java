@@ -87,13 +87,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteVi
         // Kategorie-Indikator "einfärben"
         // -> Farbe von Background ändern
 
-        // - Referenz auf den Background holen
-        GradientDrawable background = (GradientDrawable) holder.categoryView.getBackground();
-        // - Aus dem Zahlencode der Kategorie eine Farbe erzeugen
-        int color = Color.parseColor("#" + note.categoryColor);
-        // Farbe für Hintergrund setzen
-        background.setColor(color);
-
+        if(note.categoryColor != null) {
+            // - Referenz auf den Background holen
+            GradientDrawable background = (GradientDrawable) holder.categoryView.getBackground();
+            // - Aus dem Zahlencode der Kategorie eine Farbe erzeugen
+            int color = Color.parseColor("#" + note.categoryColor);
+            // Farbe für Hintergrund setzen
+            background.setColor(color);
+        }
 
         // Wenn auf den Holder geklickt wird...
         holder.itemView.setOnClickListener(view -> {
