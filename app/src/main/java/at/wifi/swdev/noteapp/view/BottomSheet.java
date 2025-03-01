@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,9 +13,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import at.wifi.swdev.noteapp.database.entity.Note;
+import at.wifi.swdev.noteapp.database.entity.Category;
 import at.wifi.swdev.noteapp.database.resultset.NoteWithCategory;
 import at.wifi.swdev.noteapp.databinding.BottomsheetBinding;
+import at.wifi.swdev.noteapp.viewmodel.CategoryViewModel;
 import at.wifi.swdev.noteapp.viewmodel.NoteViewModel;
 
 public class BottomSheet extends BottomSheetDialogFragment {
@@ -21,12 +24,16 @@ public class BottomSheet extends BottomSheetDialogFragment {
     public static final String NOTE_KEY = "note_key";
     private BottomsheetBinding binding;
     private NoteViewModel viewModel;
+    private CategoryViewModel categoryViewModel;
     private NoteWithCategory noteToEdit;
+    private NoteWithCategory newNote;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(NoteViewModel.class);
+        ViewModelProvider viewModelProvider = new ViewModelProvider(requireActivity());
+        viewModel = viewModelProvider.get(NoteViewModel.class);
+        categoryViewModel = viewModelProvider.get(CategoryViewModel.class);
 
         // Mögliche Notiz "auspacken"
         // Gibt es ein Bundle?
@@ -37,6 +44,8 @@ public class BottomSheet extends BottomSheetDialogFragment {
             // Hat das Bundle eine Notiz?
             noteToEdit = (NoteWithCategory) bundle.getSerializable(NOTE_KEY);
         }
+
+        newNote = new NoteWithCategory();
     }
 
     @Nullable
@@ -52,6 +61,50 @@ public class BottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        categoryViewModel.getAllCategories().observe(requireActivity(), categories -> {
+            // Spinner mit den Auswahlmöglichkeiten füllen
+            ArrayAdapter<Category> adapter = new ArrayAdapter<>(
+                    requireActivity(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    categories
+            );
+            binding.categorySpinner.setAdapter(adapter);
+
+            binding.categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    Category selectedCategory = categories.get(position);
+
+                    if (noteToEdit != null) {
+                        noteToEdit.categoryId = selectedCategory.id;
+                    } else {
+                        newNote.categoryId = selectedCategory.id;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    // Do nothing
+                }
+            });
+
+            if (noteToEdit != null) {
+                // Start
+                int position;
+
+                for (position = 0; position < categories.size(); position++) {
+                    Category category = categories.get(position);
+                    if (category.id == noteToEdit.categoryId) {
+                        break;
+                    }
+                }
+
+                // Ziel
+                binding.categorySpinner.setSelection(position);
+            }
+
+        });
 
         // Wollen wir eine Notiz erstellen oder bearbeiten?
         // -> Wenn noteToEdit nicht null ist, bearbeiten wir eine bestehende Notiz
@@ -79,10 +132,11 @@ public class BottomSheet extends BottomSheetDialogFragment {
                 // Wir erstellen eine neue Notiz
 
                 // Schritt 3: Erstellen der Notiz
-                Note note = new Note(title, content);
+                newNote.title = title;
+                newNote.content = content;
 
                 // Schritt 4: Notiz in Datenbank speichern
-                viewModel.insert(note);
+                viewModel.insert(newNote.toNote());
             }
 
             // Schritt 5: Bottomsheet schließen

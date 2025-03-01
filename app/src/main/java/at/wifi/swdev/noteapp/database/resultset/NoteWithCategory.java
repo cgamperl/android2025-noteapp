@@ -34,6 +34,7 @@ public class NoteWithCategory implements Serializable {
         note.content = this.content;
         note.done = this.done;
         note.priority = this.priority;
+        note.categoryId = this.categoryId;
         note.createdAt = this.createdAt;
         note.updatedAt = this.updatedAt;
 

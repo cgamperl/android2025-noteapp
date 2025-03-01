@@ -38,6 +38,12 @@
             android:lines="8" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_height="56dp" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/saveBtn"
         android:layout_width="match_parent"

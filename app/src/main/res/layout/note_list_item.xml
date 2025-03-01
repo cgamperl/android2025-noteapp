@@ -38,8 +38,8 @@
 
     <View
         android:id="@+id/category"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:background="@drawable/circle_shape"
         app:layout_constraintBottom_toBottomOf="@+id/noteContent"
         app:layout_constraintEnd_toEndOf="parent"

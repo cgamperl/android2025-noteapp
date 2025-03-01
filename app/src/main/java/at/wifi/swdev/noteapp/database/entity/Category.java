@@ -1,5 +1,6 @@
 package at.wifi.swdev.noteapp.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -16,4 +17,9 @@ public class Category {
     public String name;
     public String color;
 
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
+    }
 }
